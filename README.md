@@ -151,7 +151,3 @@ Este projeto é aberto para estudo e personalização.
 
 ---
 
-Se quiser, posso também:
-✅ Criar um **logo** para o projeto
-✅ Criar **badges** para o README
-✅ Gerar **prints das telas** automaticamente
