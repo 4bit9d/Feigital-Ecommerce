@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="bi bi-box"></i> Meus Pedidos
+    </h2>
+    <a href="{% url 'home' %}" class="btn btn-outline-success">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+{% if pedidos %}
+<div class="row">
+    {% for pedido in pedidos %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Pedido #{{ pedido.id }}</h5>
+                <span class="badge 
+                    {% if pedido.status == 'novo' %}bg-primary
+                    {% elif pedido.status == 'preparando' %}bg-warning
+                    {% elif pedido.status == 'pronto' %}bg-success
+                    {% else %}bg-secondary{% endif %}">
+                    {{ pedido.get_status_display }}
+                </span>
+            </div>
+            <div class="card-body">
+                <p><i class="bi bi-calendar"></i> <strong>Data:</strong> {{ pedido.criado_em|date:"d/m/Y H:i" }}</p>
+                <p><i class="bi bi-currency-dollar"></i> <strong>Total:</strong> R$ {{ pedido.total }}</p>
+                
+                {% if pedido.qr_code %}
+                <div class="text-center my-3">
+                    <p class="text-muted"><small>QR Code para retirada:</small></p>
+                    <img src="{{ pedido.qr_code.url }}" alt="QR Code" class="img-fluid" style="max-width: 150px;">
+                </div>
+                {% endif %}
+                
+                <div class="mt-3">
+                    <h6>Produtos:</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for item in pedido.itempedido_set.all %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>{{ item.produto.nome }} × {{ item.quantidade }}</span>
+                            <span>R$ {{ item.total }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <div class="display-1 text-muted mb-4">
+        <i class="bi bi-box"></i>
+    </div>
+    <h3 class="mb-3">Você ainda não fez pedidos</h3>
+    <p class="text-muted mb-4">Seus pedidos aparecerão aqui.</p>
+    <a href="{% url 'home' %}" class="btn btn-success btn-lg">
+        <i class="bi bi-basket"></i> Fazer Primeira Compra
+    </a>
+</div>
+{% endif %}
+{% endblock %}

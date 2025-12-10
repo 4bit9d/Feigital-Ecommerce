@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="bi bi-graph-up"></i> Dashboard - {{ banca.nome }}
+    </h2>
+    <div>
+        <a href="/admin/" target="_blank" class="btn btn-warning me-2">
+            <i class="bi bi-gear"></i> Gerenciar Produtos
+        </a>
+        <a href="{% url 'home' %}" class="btn btn-outline-success">
+            <i class="bi bi-shop"></i> Ver Loja
+        </a>
+    </div>
+</div>
+
+<!-- Estatísticas -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <div class="display-4 mb-2">{{ produtos.count }}</div>
+                <h5>Produtos Cadastrados</h5>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <div class="display-4 mb-2">R$ {{ total_vendas|default:"0" }}</div>
+                <h5>Total em Vendas</h5>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card text-center bg-warning text-dark">
+            <div class="card-body">
+                <div class="display-4 mb-2">{{ banca.nome }}</div>
+                <h5>Sua Banca</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de Produtos -->
+<h4 class="mb-3">
+    <i class="bi bi-basket"></i> Meus Produtos
+    <a href="/admin/core/produto/add/" target="_blank" class="btn btn-success btn-sm float-end">
+        <i class="bi bi-plus-circle"></i> Novo Produto
+    </a>
+</h4>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-success">
+            <tr>
+                <th>Produto</th>
+                <th>Preço</th>
+                <th>Estoque</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+            <tr>
+                <td>
+                    <strong>{{ produto.nome }}</strong>
+                    <br>
+                    <small class="text-muted">{{ produto.descricao|truncatechars:50 }}</small>
+                </td>
+                <td class="fw-bold">R$ {{ produto.preco }}</td>
+                <td>
+                    <span class="badge {% if produto.estoque > 0 %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ produto.estoque }} unidades
+                    </span>
+                </td>
+                <td>
+                    {% if produto.estoque > 0 %}
+                        <span class="badge bg-success">Disponível</span>
+                    {% else %}
+                        <span class="badge bg-danger">Esgotado</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/admin/core/produto/{{ produto.id }}/change/" target="_blank" 
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted py-4">
+                    <i class="bi bi-info-circle"></i> Nenhum produto cadastrado. 
+                    <a href="/admin/core/produto/add/" target="_blank">Adicione o primeiro!</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="alert alert-info mt-4">
+    <i class="bi bi-lightbulb"></i> <strong>Dica:</strong> Use o painel administrativo 
+    (<a href="/admin/" target="_blank">/admin/</a>) para gerenciar completamente seus produtos, 
+    ver pedidos e configurar sua banca.
+</div>
+{% endblock %}
